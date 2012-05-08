@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <string name="app_name">MichiganBusinessRadio</string>
+   
+   <!-- Ad Screen  -->
+   <string name="content_assist_dismiss_text">Dismiss</string>
+   <string name="content_assist_ad_text">Advertisement</string>
+   
+</resources>
