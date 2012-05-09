@@ -2,13 +2,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:contentDescription="@string/content_assist_mbn_logo"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_launcher" />
+
+    <FrameLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3">
+        
+       <ImageButton
+           android:id="@+id/playPauseButton"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:contentDescription="@string/content_assist_play_radio"
+           android:onClick="onClickPlayPause"
+           android:src="@android:drawable/ic_media_play" />
+
+       <RelativeLayout
+           android:id="@+id/loadingAudioStreamProgress"
+           android:focusable="true"
+           android:background="#50000000"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+           <ProgressBar 
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_centerInParent="true"
+               style="@android:style/Widget.ProgressBar.Large" />
+       </RelativeLayout>
+       
+    </FrameLayout>
+
     <TextView
         android:id="@+id/textView1"
-        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="The Radio Player"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:gravity="center"
+        android:text="@string/play_button_instructions"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/visit_mbn_website" />
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:contentDescription="@string/content_assist_ad_text"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_launcher" />
+    
 </LinearLayout>
