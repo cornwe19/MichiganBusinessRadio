@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,7 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener 
    }
 
    private static final String MBN_STREAM_URL = "http://radio.michiganbusinessnetwork.com:8000/;stream.nsv";
+   private static final Uri MBN_HOME_PAGE = Uri.parse( "http://www.michiganbusinessnetwork.com/" );
    
    private MediaPlayer mPlayer = null;
    private ImageButton mPlayPauseButton;
@@ -57,13 +59,21 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener 
          }
       }
    }
+
+   public void onClickLaunchMBNWebsite( View view ) {
+      Intent browserIntent = new Intent( Intent.ACTION_VIEW, MBN_HOME_PAGE );
+      startActivity( browserIntent );
+   }
    
    @Override
    public void onStop() {
       super.onStop();
       
-      if ( mPlayer.isPlaying() ) {
-         mPlayer.stop();
+      if ( mPlayer != null ) {
+         if ( mPlayer.isPlaying() ) {
+            mPlayer.stop();
+         }
+         
          mPlayer.release();
       }
    }
