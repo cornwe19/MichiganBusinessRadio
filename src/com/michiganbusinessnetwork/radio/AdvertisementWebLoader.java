@@ -1,0 +1,93 @@
+package com.michiganbusinessnetwork.radio;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+
+import android.net.Uri;
+import android.os.AsyncTask;
+
+public class AdvertisementWebLoader extends AsyncTask<Object,Void,Exception> {
+
+   private static final String ROOT_NODE = "root/ad";
+   private static final String FULL_SCREEN_IMAGE_NODE = "mobile";
+   private static final String BANNER_IMAGE_NODE = "mobileBanner";
+   private static final String TARGET_URI_NODE = "url";
+   
+   Advertisement mLoadedAd;
+   Advertisement.OnLoadedCallback mCallback;
+   
+   public AdvertisementWebLoader( Advertisement.OnLoadedCallback callback ) {
+      mCallback = callback;
+   }
+   
+   @Override
+   protected Exception doInBackground( Object... params ) {
+      Exception caughtException = null;
+      String request;
+      
+      try {
+         request = (String)params[0];
+         mLoadedAd = (Advertisement)params[1];
+      }
+      catch ( ClassCastException e ){
+         return new IllegalArgumentException( "Must pass a string request and an advertisement to load." );
+      }
+      catch ( ArrayIndexOutOfBoundsException e ) {
+         return new IllegalArgumentException( "Must pass a string request and an advertisement to load." );
+      }
+      
+      try {
+         InputSource source = WebHelper.getResponse( request );
+         
+         loadAdvertisementXML( mLoadedAd, source );
+      }
+      catch ( MalformedURLException e ) {
+         caughtException = e;
+      }
+      catch ( IOException e ) {
+         caughtException = e;
+      }
+      catch ( XPathExpressionException e ) {
+         caughtException = e;
+      }
+      
+      return caughtException;
+   }
+
+   @Override
+   protected void onPostExecute( Exception e ) {
+      if( mCallback != null ) {
+         if( e == null ) {
+            mCallback.onLoaded( mLoadedAd );
+         }
+         else {
+            mCallback.onError( e );
+         }
+      }
+   }
+   
+   private void loadAdvertisementXML( Advertisement advertisement, InputSource source ) throws XPathExpressionException {
+      XPathFactory xpathFactory = XPathFactory.newInstance();
+      XPath xpath = xpathFactory.newXPath();
+      
+      Node advertisementInfo = (Node)xpath.evaluate( ROOT_NODE, source, XPathConstants.NODE );
+
+      advertisement.mFullscreenImageUri = Uri.parse( getNodeString( xpath, advertisementInfo, FULL_SCREEN_IMAGE_NODE ) );
+      advertisement.mBannerImageUri = Uri.parse( getNodeString( xpath, advertisementInfo, BANNER_IMAGE_NODE ) );
+      advertisement.mTargetUri = Uri.parse( getNodeString( xpath, advertisementInfo, TARGET_URI_NODE ) );
+   }
+   
+   
+   private String getNodeString( XPath xpath, Node parent, String nodeName ) throws XPathExpressionException { 
+      Node node = (Node)xpath.evaluate( nodeName, parent, XPathConstants.NODE );
+      return node.getFirstChild().getNodeValue();
+   }
+}
