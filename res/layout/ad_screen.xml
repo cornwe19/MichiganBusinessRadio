@@ -18,14 +18,16 @@
        android:contentDescription="@string/content_assist_ad_text"
        android:id="@+id/advertisement_image" />
     
-   <Button
+   <ImageButton
       android:layout_width="48dp"
-      android:layout_height="wrap_content"
+      android:layout_height="48dp"
       android:layout_alignParentRight="true"
       android:layout_alignParentTop="true"
       android:layout_margin="10dip"
       android:onClick="onDismissAd"
-      android:text="x"
+      android:scaleType="fitCenter"
+      android:background="@null"
+      android:src="@android:drawable/btn_dialog"
       android:contentDescription="@string/content_assist_dismiss_text" />
 
 </RelativeLayout>
