@@ -1,67 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:layout_height="match_parent" >
+    
     <ImageView
+        android:id="@+id/mbnLogo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="4"
+        android:layout_height="150dp"
         android:contentDescription="@string/content_assist_mbn_logo"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/logo" />
 
-    <FrameLayout 
+    <RelativeLayout
+        android:id="@+id/advertisementContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="3">
-        
-       <ImageButton
+        android:layout_marginBottom="5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" >
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+
+        <ImageView
+            android:id="@+id/advertisement_image"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:onClick="onClickAdvertisement"
+            android:contentDescription="@string/content_assist_ad_text"
+            android:scaleType="fitCenter" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/playPauseContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_below="@+id/mbnLogo" >
+
+        <ImageButton
            android:id="@+id/playPauseButton"
            android:layout_width="match_parent"
            android:layout_height="match_parent"
+           android:background="@drawable/play_button"
+           android:layout_margin="5dp"
            android:contentDescription="@string/content_assist_play_radio"
-           android:onClick="onClickPlayPause"
-           android:src="@android:drawable/ic_media_play" />
+           android:onClick="onClickPlayPause" />
+        
+        <ProgressBar
+            android:id="@+id/loadingStreamProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
 
-       <RelativeLayout
-           android:id="@+id/loadingAudioStreamProgress"
-           android:focusable="true"
-           android:background="#50000000"
-           android:layout_width="match_parent"
-           android:layout_height="match_parent">
-           <ProgressBar 
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_centerInParent="true"
-               style="@android:style/Widget.ProgressBar.Large" />
-       </RelativeLayout>
-       
-    </FrameLayout>
-
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/textView1"
-        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/playPauseContainer"
         android:gravity="center"
         android:text="@string/play_button_instructions"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
+
     <Button
-        android:layout_weight="2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/advertisementContainer"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        style="@android:style/TextAppearance.Large"
+        android:textColor="@android:color/white"
+        android:background="@drawable/visit_mbn_button"
         android:onClick="onClickLaunchMBNWebsite"
         android:text="@string/visit_mbn_website" />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:contentDescription="@string/content_assist_ad_text"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_launcher" />
-    
-</LinearLayout>
+</RelativeLayout>

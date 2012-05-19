@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-   <string name="app_name">MichiganBusinessRadio</string>
+   <string name="app_name">Michigan Business Radio</string>
    
    <!-- Ad Screen  -->
    <string name="content_assist_dismiss_text">Dismiss</string>
@@ -12,5 +12,6 @@
    <string name="visit_mbn_website">Visit MBN Website</string>
    <string name="content_assist_play_radio">Play radio stream</string>
    <string name="content_assist_mbn_logo">Michigan Business Network logo</string>
+   <string name="content_assist_visit_mbn_button">Visit MBN Website</string>
    
 </resources>
