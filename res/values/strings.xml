@@ -9,6 +9,7 @@
    
    <!-- Radio Player -->
    <string name="play_button_instructions">Press <b>play</b> to begin stream.</string>
+   <string name="loading_station">Loading MBN Live…</string>
    <string name="visit_mbn_website">Visit MBN Website</string>
    <string name="content_assist_play_radio">Play radio stream</string>
    <string name="content_assist_mbn_logo">Michigan Business Network logo</string>

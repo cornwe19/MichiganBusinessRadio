@@ -72,7 +72,7 @@
         android:padding="3dp"
         android:textColor="#fff"
         android:gravity="center"
-        android:text="@string/play_button_instructions"
+        android:text="@string/loading_station"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
