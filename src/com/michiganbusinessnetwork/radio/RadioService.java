@@ -3,7 +3,11 @@ package com.michiganbusinessnetwork.radio;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
@@ -13,9 +17,12 @@ import android.os.IBinder;
 
 public class RadioService extends Service implements MediaPlayer.OnPreparedListener, OnAudioFocusChangeListener {
 
+   private int RADIO_NOTIFICATION = 0x1;
+   
    private MediaPlayer mRadioPlayer = new MediaPlayer();
    private boolean mIsPrepared = false, mShouldResumeOnAudioFocusGain = false;
    private MediaPlayer.OnPreparedListener mListener;
+   private NotificationManager mNotificationManager;
    
    public class RadioServiceBinder extends Binder {
       public RadioService getService() {
@@ -41,6 +48,8 @@ public class RadioService extends Service implements MediaPlayer.OnPreparedListe
          e.printStackTrace();
       }
       
+      mNotificationManager = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE );
+      
       return START_STICKY;
    }
    
@@ -63,17 +72,41 @@ public class RadioService extends Service implements MediaPlayer.OnPreparedListe
       if( mIsPrepared ) {
          AudioManager manager = (AudioManager) getSystemService( Activity.AUDIO_SERVICE );
          manager.requestAudioFocus( this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN );
+         
+         showCurrentRadioStationNotification();
+         
          mRadioPlayer.start();
       }
    }
    
+   private void showCurrentRadioStationNotification() {
+      Notification notification = new Notification( R.drawable.ic_stat_radio_active, "", System.currentTimeMillis() );
+
+      PendingIntent playerIntent = PendingIntent.getActivity(this, 0,
+              new Intent(this, RadioPlayerActivity.class), 0 );
+
+      notification.setLatestEventInfo(this, "Michigan Business Radio",
+                     "", playerIntent );
+
+      notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+      
+      // Send the notification.
+      mNotificationManager.notify(RADIO_NOTIFICATION, notification);
+  }
+   
    public void stop() {
       if( isPlaying() ) {
-         mRadioPlayer.pause();
+         pausePlayer();
       }
       
       AudioManager manager = (AudioManager) getSystemService( Activity.AUDIO_SERVICE );
       manager.abandonAudioFocus( this );
+   }
+   
+   private void pausePlayer() {
+      mRadioPlayer.pause();
+      
+      mNotificationManager.cancel( RADIO_NOTIFICATION );
    }
    
    public boolean isPlaying() {
@@ -102,7 +135,7 @@ public class RadioService extends Service implements MediaPlayer.OnPreparedListe
          if ( isPlaying() ) {
             mShouldResumeOnAudioFocusGain = true;
             
-            mRadioPlayer.pause();
+            pausePlayer();
          }
       }
    }
