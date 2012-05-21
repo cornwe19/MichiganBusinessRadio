@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
@@ -90,13 +89,10 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
    
    public void onClickPlayPause( View v ) {
       if( mRadioPlayer != null ) {
-         AudioManager manager = (AudioManager) getSystemService( Activity.AUDIO_SERVICE );
          if ( mRadioPlayer.isPlaying() ) {
-            manager.abandonAudioFocus( null );
             mRadioPlayer.stop();
          }
          else {
-            manager.requestAudioFocus( null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN );
             mRadioPlayer.play();
          }
       }
