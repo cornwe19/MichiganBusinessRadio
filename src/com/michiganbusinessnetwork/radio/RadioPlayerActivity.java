@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -14,10 +16,12 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import com.michiganbusinessnetwork.radio.RadioService.RadioServiceBinder;
 
 public class RadioPlayerActivity extends Activity implements OnPreparedListener, Advertisement.OnLoadedCallback {
 
@@ -26,12 +30,33 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
       context.startActivity( thisIntent );
    }
 
-   private static final String MBN_STREAM_URL = "http://radio.michiganbusinessnetwork.com:8000/;stream.nsv";
+   public static final String MBN_STREAM_URL = "http://radio.michiganbusinessnetwork.com:8000/;stream.nsv";
    private static final Uri MBN_HOME_PAGE = Uri.parse( "http://www.michiganbusinessnetwork.com/" );
    
-   private MediaPlayer mPlayer = null;
    private ImageButton mPlayPauseButton;
    private Uri mAdvertisementUri;
+   
+   private RadioService mRadioPlayer;
+   private ServiceConnection mConnection = new ServiceConnection() {
+
+      @Override
+      public void onServiceConnected( ComponentName className, IBinder binder ) {
+         mRadioPlayer = ( (RadioServiceBinder)binder ).getService();
+         
+         if( mRadioPlayer.isPrepared() ) {
+            updatePlayPauseUI();
+         }
+         else {
+            mRadioPlayer.setOnPreparedListener( RadioPlayerActivity.this );
+         }
+      }
+
+      @Override
+      public void onServiceDisconnected( ComponentName className ) {
+         mRadioPlayer = null;
+      }
+      
+   };
    
    @Override
    public void onCreate( Bundle savedInstanceState ) {
@@ -42,37 +67,41 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
       mPlayPauseButton = (ImageButton)findViewById( R.id.playPauseButton );
       mPlayPauseButton.setEnabled( false );
       
-      MediaPlayer player = new MediaPlayer();
-      try {
-         player.setAudioStreamType( AudioManager.STREAM_MUSIC );
-         player.setDataSource( MBN_STREAM_URL );
-         player.setOnPreparedListener( this );
-         player.prepareAsync();
-      }
-      catch ( IOException e ) {
-         Log.e( "RadioPlayer", "Failed to initialize media mPlayer" );
-         e.printStackTrace();
-      }
-      
       Advertisement.loadAsync( Advertisement.MI_BUSINESS_AD_FEED, this );
    }
    
+   @Override
+   public void onStart() {
+      super.onStart();
+      
+      Intent radioService = new Intent( this, RadioService.class );
+      
+      bindService( radioService, mConnection, Context.BIND_AUTO_CREATE );
+   }
+
+   @Override
+   public void onStop() {
+      super.onStop();
+      
+      if( mRadioPlayer != null ) {
+         unbindService( mConnection );
+      }
+   }
+   
    public void onClickPlayPause( View v ) {
-      if( mPlayer != null ) {
+      if( mRadioPlayer != null ) {
          AudioManager manager = (AudioManager) getSystemService( Activity.AUDIO_SERVICE );
-         if ( mPlayer.isPlaying() ) {
+         if ( mRadioPlayer.isPlaying() ) {
             manager.abandonAudioFocus( null );
-            mPlayer.pause();
-            mPlayPauseButton.setImageResource( R.drawable.play );
-            mPlayPauseButton.setBackgroundResource( R.drawable.play_button );
+            mRadioPlayer.stop();
          }
          else {
             manager.requestAudioFocus( null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN );
-            mPlayer.start();
-            mPlayPauseButton.setImageResource( R.drawable.stop );
-            mPlayPauseButton.setBackgroundResource( R.drawable.stop_button );
+            mRadioPlayer.play();
          }
       }
+      
+      updatePlayPauseUI();
    }
 
    public void onClickLaunchMBNWebsite( View view ) {
@@ -81,27 +110,23 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
    }
    
    @Override
-   public void onPause() {
-      super.onPause();
-      
-      if ( mPlayer != null ) {
-         if ( mPlayer.isPlaying() ) {
-            mPlayer.stop();
-         }
-         
-         mPlayer.reset();
-         mPlayer.release();
-      }
+   public void onPrepared( MediaPlayer player ) {
+      updatePlayPauseUI();
    }
 
-   @Override
-   public void onPrepared( MediaPlayer player ) {
+   private void updatePlayPauseUI() {
       View loadingStreamProgress = findViewById( R.id.loadingStreamProgressBar );
       loadingStreamProgress.setVisibility( View.GONE );
       mPlayPauseButton.setEnabled( true );
-      mPlayPauseButton.setImageResource( R.drawable.play );
       
-      mPlayer = player;
+      if( mRadioPlayer.isPlaying() ) {
+         mPlayPauseButton.setBackgroundResource( R.drawable.stop_button );
+         mPlayPauseButton.setImageResource( R.drawable.stop );
+      }
+      else {
+         mPlayPauseButton.setBackgroundResource( R.drawable.play_button );
+         mPlayPauseButton.setImageResource( R.drawable.play );
+      }
    }
 
    @Override
