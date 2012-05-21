@@ -23,6 +23,7 @@ public class RadioService extends Service implements MediaPlayer.OnPreparedListe
    private boolean mIsPrepared = false, mShouldResumeOnAudioFocusGain = false;
    private MediaPlayer.OnPreparedListener mListener;
    private NotificationManager mNotificationManager;
+   private String mCurrentRadioProgramTitle;
    
    public class RadioServiceBinder extends Binder {
       public RadioService getService() {
@@ -68,6 +69,10 @@ public class RadioService extends Service implements MediaPlayer.OnPreparedListe
       return mIsPrepared;
    }
 
+   public void setCurrentRadioProgram( String programName ) {
+      mCurrentRadioProgramTitle = programName;
+   }
+   
    public void play() {
       if( mIsPrepared ) {
          AudioManager manager = (AudioManager) getSystemService( Activity.AUDIO_SERVICE );
@@ -80,13 +85,12 @@ public class RadioService extends Service implements MediaPlayer.OnPreparedListe
    }
    
    private void showCurrentRadioStationNotification() {
-      Notification notification = new Notification( R.drawable.ic_stat_radio_active, "", System.currentTimeMillis() );
+      Notification notification = new Notification( R.drawable.ic_stat_radio_active, mCurrentRadioProgramTitle, 0 );
 
       PendingIntent playerIntent = PendingIntent.getActivity(this, 0,
               new Intent(this, RadioPlayerActivity.class), 0 );
 
-      notification.setLatestEventInfo(this, "Michigan Business Radio",
-                     "", playerIntent );
+      notification.setLatestEventInfo(this, getString( R.string.app_name ), mCurrentRadioProgramTitle, playerIntent );
 
       notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
       

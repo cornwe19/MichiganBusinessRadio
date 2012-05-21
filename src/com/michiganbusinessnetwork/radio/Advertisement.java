@@ -14,6 +14,8 @@ public class Advertisement {
    public Uri mBannerImageUri;
    public Uri mTargetUri;
    
+   public String mCurrentRadioProgram;
+   
    private Advertisement() { }
    
    public static void loadAsync( String feedUrl, OnLoadedCallback callback ) {

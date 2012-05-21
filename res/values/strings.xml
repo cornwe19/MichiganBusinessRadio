@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-   <string name="app_name">Michigan Business Radio</string>
+   <string name="app_name">MBN Live</string>
    
    <!-- Ad Screen  -->
    <string name="content_assist_dismiss_text">Dismiss</string>

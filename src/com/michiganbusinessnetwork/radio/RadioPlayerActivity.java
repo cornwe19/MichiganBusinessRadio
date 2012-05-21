@@ -147,6 +147,10 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
       
       new Thread( downloadAndUpdateAdImage ).start();
       
+      if( mRadioPlayer != null ) {
+         mRadioPlayer.setCurrentRadioProgram( ad.mCurrentRadioProgram );
+      }
+      
       mAdvertisementUri = ad.mTargetUri;
    }
 
