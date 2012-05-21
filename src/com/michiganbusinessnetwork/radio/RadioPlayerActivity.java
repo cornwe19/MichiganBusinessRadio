@@ -19,6 +19,7 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.michiganbusinessnetwork.radio.RadioService.RadioServiceBinder;
 
@@ -33,6 +34,7 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
    private static final Uri MBN_HOME_PAGE = Uri.parse( "http://www.michiganbusinessnetwork.com/" );
    
    private ImageButton mPlayPauseButton;
+   private TextView mNowPlayingText;
    private Uri mAdvertisementUri;
    
    private RadioService mRadioPlayer;
@@ -56,6 +58,7 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
       }
       
    };
+   private String mCurrentProgramTitle;
    
    @Override
    public void onCreate( Bundle savedInstanceState ) {
@@ -65,6 +68,9 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
       
       mPlayPauseButton = (ImageButton)findViewById( R.id.playPauseButton );
       mPlayPauseButton.setEnabled( false );
+      
+      mNowPlayingText = (TextView)findViewById( R.id.nowPlayingText );
+      mNowPlayingText.setSelected( true );
       
       Advertisement.loadAsync( Advertisement.MI_BUSINESS_AD_FEED, this );
    }
@@ -118,10 +124,14 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
       if( mRadioPlayer.isPlaying() ) {
          mPlayPauseButton.setBackgroundResource( R.drawable.stop_button );
          mPlayPauseButton.setImageResource( R.drawable.stop );
+         mNowPlayingText.setText( String.format( getString( R.string.now_playing_format ), mCurrentProgramTitle ) );
+         mNowPlayingText.setSelected( true );
       }
       else {
          mPlayPauseButton.setBackgroundResource( R.drawable.play_button );
          mPlayPauseButton.setImageResource( R.drawable.play );
+         mNowPlayingText.setText( R.string.play_button_instructions );
+         mNowPlayingText.setSelected( true );
       }
    }
 
@@ -148,7 +158,8 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
       new Thread( downloadAndUpdateAdImage ).start();
       
       if( mRadioPlayer != null ) {
-         mRadioPlayer.setCurrentRadioProgram( ad.mCurrentRadioProgram );
+         mCurrentProgramTitle = ad.mCurrentRadioProgram;
+         mRadioPlayer.setCurrentRadioProgram( mCurrentProgramTitle );
       }
       
       mAdvertisementUri = ad.mTargetUri;

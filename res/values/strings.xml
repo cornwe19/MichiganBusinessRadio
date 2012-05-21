@@ -13,5 +13,6 @@
    <string name="content_assist_play_radio">Play radio stream</string>
    <string name="content_assist_mbn_logo">Michigan Business Network logo</string>
    <string name="content_assist_visit_mbn_button">Visit MBN Website</string>
+   <string name="now_playing_format"><b>Now Playing:</b> %s</string>
    
 </resources>

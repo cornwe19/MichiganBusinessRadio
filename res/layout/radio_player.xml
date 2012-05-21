@@ -59,10 +59,18 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/nowPlayingText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/playPauseContainer"
+        android:background="@drawable/now_playing_background"
+        android:layout_margin="7dp"
+        android:ellipsize="marquee"
+        android:scrollHorizontally="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:padding="3dp"
+        android:textColor="#fff"
         android:gravity="center"
         android:text="@string/play_button_instructions"
         android:textAppearance="?android:attr/textAppearanceMedium" />
