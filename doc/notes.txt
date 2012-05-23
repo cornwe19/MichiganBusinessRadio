@@ -1,0 +1,4 @@
+NOTES
+
+keystore-alias: mbn_radio
+keystore-password: mBn_r@d1o
