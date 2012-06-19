@@ -14,5 +14,6 @@
    <string name="content_assist_play_radio">Play radio stream</string>
    <string name="content_assist_mbn_logo">Michigan Business Network logo</string>
    <string name="now_playing_format"><b>Now Playing:</b> %s</string>
+   <string name="load_program_title_failed">Couldn\'t load program name</string>
    
 </resources>

@@ -124,7 +124,10 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
       if( mRadioPlayer.isPlaying() ) {
          mPlayPauseButton.setBackgroundResource( R.drawable.stop_button );
          mPlayPauseButton.setImageResource( R.drawable.stop );
-         mNowPlayingText.setText( String.format( getString( R.string.now_playing_format ), mCurrentProgramTitle ) );
+         
+         String programTitle = mCurrentProgramTitle.equals( "" ) ? getString( R.string.load_program_title_failed ) : mCurrentProgramTitle;
+         
+         mNowPlayingText.setText( String.format( getString( R.string.now_playing_format ), programTitle ) );
          mNowPlayingText.setSelected( true );
       }
       else {
@@ -166,6 +169,10 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
    }
 
    public void onClickAdvertisement( View v ) {
+      if( mAdvertisementUri.equals( "" ) ) {
+         return;
+      }
+      
       Intent launchAdvertisement = new Intent( Intent.ACTION_VIEW, mAdvertisementUri );
       startActivity( launchAdvertisement );
    }

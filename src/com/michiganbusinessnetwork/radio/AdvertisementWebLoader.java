@@ -93,11 +93,31 @@ public class AdvertisementWebLoader extends AsyncTask<Object,Void,Exception> {
    private void loadRadioFeedIntoAdvertisement( Advertisement advertisement, XPath xPath, Node rootNode ) throws XPathExpressionException {
       Node nowPlayingTitle = (Node)xPath.evaluate( NOW_PLAYING_NODE, rootNode, XPathConstants.NODE );
       
-      advertisement.mCurrentRadioProgram = nowPlayingTitle.getFirstChild().getNodeValue();
+      advertisement.mCurrentRadioProgram = getNodeValueOrEmptyString( nowPlayingTitle );
    }
    
    private String getNodeString( XPath xpath, Node parent, String nodeName ) throws XPathExpressionException { 
       Node node = (Node)xpath.evaluate( nodeName, parent, XPathConstants.NODE );
-      return node.getFirstChild().getNodeValue();
+      
+      String returnString = getNodeValueOrEmptyString( node );
+      
+      return returnString;
+   }
+
+   // Note: safeguards against any bad XML that could be generated in the web feed
+   //  - This could potentially happen when no radio station is playing
+   private String getNodeValueOrEmptyString( Node node ) {
+      String returnString = "";
+      
+      Node nodeText = null;
+      if( node != null ) {
+         nodeText = node.getFirstChild();   
+      }
+      
+      if( nodeText != null ) {
+         returnString = nodeText.getNodeValue();
+      }
+      
+      return returnString;
    }
 }

@@ -27,13 +27,13 @@ public class StartupAdActivity extends Activity implements Advertisement.OnLoade
       Advertisement.loadAsync( Advertisement.MI_BUSINESS_AD_FEED, this );
    }
    
-   public void onClickViewAd( View v ) {
-      RadioPlayerActivity.launch( this );
+   public void onClickViewAd( View v ) {      
+      dismissAd();
       
-      Intent browserIntent = new Intent( Intent.ACTION_VIEW, mAdvertisementUri );
-      startActivity( browserIntent );
-      
-      finish();
+      if( !mAdvertisementUri.equals( "" ) ) {
+         Intent browserIntent = new Intent( Intent.ACTION_VIEW, mAdvertisementUri );
+         startActivity( browserIntent );
+      }
    }
 
    public void onDismissAd( View v ) {
