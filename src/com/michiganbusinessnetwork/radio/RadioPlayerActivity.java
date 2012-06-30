@@ -45,6 +45,7 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
          mRadioPlayer = ( (RadioServiceBinder)binder ).getService();
          
          if( mRadioPlayer.isPrepared() ) {
+            mCurrentProgramTitle = mRadioPlayer.getCurrentRadioProgram();
             updatePlayPauseUI();
          }
          else {
@@ -58,7 +59,7 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
       }
       
    };
-   private String mCurrentProgramTitle;
+   private String mCurrentProgramTitle = "";
    
    @Override
    public void onCreate( Bundle savedInstanceState ) {
@@ -71,22 +72,22 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
       
       mNowPlayingText = (TextView)findViewById( R.id.nowPlayingText );
       mNowPlayingText.setSelected( true );
-      
-      Advertisement.loadAsync( Advertisement.MI_BUSINESS_AD_FEED, this );
    }
    
    @Override
-   public void onStart() {
-      super.onStart();
+   public void onResume() {
+      super.onResume();
       
       Intent radioService = new Intent( this, RadioService.class );
       
       bindService( radioService, mConnection, Context.BIND_AUTO_CREATE );
+      
+      Advertisement.loadAsync( Advertisement.MI_BUSINESS_AD_FEED, this );
    }
 
    @Override
-   public void onStop() {
-      super.onStop();
+   public void onPause() {
+      super.onPause();
       
       if( mRadioPlayer != null ) {
          unbindService( mConnection );
@@ -153,6 +154,8 @@ public class RadioPlayerActivity extends Activity implements OnPreparedListener,
                   if( adBitmap != null ) {
                      adImage.setImageBitmap( adBitmap );
                   }
+                  
+                  updatePlayPauseUI();
                }
             });
          }

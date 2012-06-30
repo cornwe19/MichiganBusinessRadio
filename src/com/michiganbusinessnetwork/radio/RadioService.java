@@ -73,6 +73,10 @@ public class RadioService extends Service implements MediaPlayer.OnPreparedListe
       mCurrentRadioProgramTitle = programName;
    }
    
+   public String getCurrentRadioProgram() {
+      return mCurrentRadioProgramTitle;
+   }
+   
    public void play() {
       if( mIsPrepared ) {
          AudioManager manager = (AudioManager) getSystemService( Activity.AUDIO_SERVICE );
