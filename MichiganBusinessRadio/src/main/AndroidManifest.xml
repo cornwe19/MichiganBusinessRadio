@@ -10,8 +10,8 @@
         android:label="@string/app_name" >
         <activity
             android:name=".StartupAdActivity"
-            android:theme="@android:style/Theme.Light"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.MichiganBusinessRadio"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +21,7 @@
         <activity
             android:name=".RadioPlayerActivity"
             android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Light"
+            android:theme="@style/Theme.MichiganBusinessRadio"
             android:screenOrientation="portrait"
             android:label="@string/app_name" />
         <service

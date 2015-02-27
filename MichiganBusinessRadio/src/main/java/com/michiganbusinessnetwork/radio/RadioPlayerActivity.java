@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +15,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.michiganbusinessnetwork.radio.RadioService.RadioServiceBinder;
 
-public class RadioPlayerActivity extends Activity implements OnPreparedListener, Advertisement.OnLoadedCallback {
+public class RadioPlayerActivity extends ActionBarActivity implements OnPreparedListener, Advertisement.OnLoadedCallback {
 
    public static void launch( Context context ) {
       Intent thisIntent = new Intent( context, RadioPlayerActivity.class );

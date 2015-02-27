@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MichiganBusinessRadio" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#146BA6</item>
+        <item name="colorAccent">#95979A</item>
+    </style>
+</resources>
