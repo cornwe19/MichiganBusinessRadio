@@ -3,17 +3,16 @@ package com.michiganbusinessnetwork.radio;
 import java.io.IOException;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 
 public class RadioService extends Service implements MediaPlayer.OnPreparedListener, OnAudioFocusChangeListener {
 
@@ -22,7 +21,6 @@ public class RadioService extends Service implements MediaPlayer.OnPreparedListe
    private MediaPlayer mRadioPlayer = new MediaPlayer();
    private boolean mIsPrepared = false, mShouldResumeOnAudioFocusGain = false;
    private MediaPlayer.OnPreparedListener mListener;
-   private NotificationManager mNotificationManager;
    private String mCurrentRadioProgramTitle;
    
    public class RadioServiceBinder extends Binder {
@@ -37,19 +35,18 @@ public class RadioService extends Service implements MediaPlayer.OnPreparedListe
    
    @Override
    public int onStartCommand( Intent intent, int flags, int startId ) {
-      try {
-         XLog.d( this, "Starting service\nPreparing player with URI: %s", intent.getDataString() );
-         mRadioPlayer.setOnPreparedListener( this );
-         mRadioPlayer.setAudioStreamType( AudioManager.STREAM_MUSIC );
-         mRadioPlayer.setDataSource( intent.getDataString() );
-         mRadioPlayer.prepareAsync();
+      if ( intent != null ) {
+         try {
+            XLog.d( this, "Starting service\nPreparing player with URI: %s", intent.getDataString() );
+            mRadioPlayer.setOnPreparedListener( this );
+            mRadioPlayer.setAudioStreamType( AudioManager.STREAM_MUSIC );
+            mRadioPlayer.setDataSource( intent.getDataString() );
+            mRadioPlayer.prepareAsync();
+         } catch ( IOException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
       }
-      catch ( IOException e ) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-      
-      mNotificationManager = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE );
       
       return START_STICKY;
    }
@@ -89,17 +86,17 @@ public class RadioService extends Service implements MediaPlayer.OnPreparedListe
    }
    
    private void showCurrentRadioStationNotification() {
-      Notification notification = new Notification( R.drawable.ic_stat_radio_active, mCurrentRadioProgramTitle, 0 );
-
-      PendingIntent playerIntent = PendingIntent.getActivity(this, 0,
-              new Intent(this, RadioPlayerActivity.class), 0 );
-
-      notification.setLatestEventInfo(this, getString( R.string.app_name ), mCurrentRadioProgramTitle, playerIntent );
-
-      notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+      Builder builder = new NotificationCompat.Builder( this )
+              .setOngoing( true )
+              .setColor( getResources().getColor( R.color.primary ) )
+              .setTicker( mCurrentRadioProgramTitle )
+              .setContentTitle( getString( R.string.app_name ) )
+              .setContentText( mCurrentRadioProgramTitle )
+              .setWhen( System.currentTimeMillis() )
+              .setContentIntent( PendingIntent.getActivity( this, 0, new Intent( this, RadioPlayerActivity.class ), 0 ) )
+              .setSmallIcon( R.drawable.ic_stat_radio_active );
       
-      // Send the notification.
-      mNotificationManager.notify(RADIO_NOTIFICATION, notification);
+      startForeground( RADIO_NOTIFICATION, builder.build() );
   }
    
    public void stop() {
@@ -114,7 +111,7 @@ public class RadioService extends Service implements MediaPlayer.OnPreparedListe
    private void pausePlayer() {
       mRadioPlayer.pause();
       
-      mNotificationManager.cancel( RADIO_NOTIFICATION );
+      stopForeground( true );
    }
    
    public boolean isPlaying() {
