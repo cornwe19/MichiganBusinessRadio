@@ -8,7 +8,7 @@ public class Advertisement {
       void onError( Exception e );
    }
    
-   public static final String MI_BUSINESS_AD_FEED = "http://www.michiganbusinessnetwork.com/mobile_feed/";
+   public static final String MI_BUSINESS_AD_FEED = "http://player.michiganbusinessnetwork.com/mobile_feed/";
 
    public Uri mFullscreenImageUri;
    public Uri mBannerImageUri;
